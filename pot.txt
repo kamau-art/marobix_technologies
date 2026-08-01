@@ -1,0 +1,180 @@
+MAROBIX TECHNOLOGIES — WEBSITE PROJECT DOC
+==========================================
+
+STACK (locked)
+- Next.js (React on Node, App Router) + JavaScript
+- Tailwind CSS v4, Lucide icons, Google Fonts (Sora/Space Grotesk + Inter)
+- Sanity CMS (hosted) — all content + leads/orders as documents (no separate DB)
+- Payments: M-Pesa (Safaricom Daraja STK push), Stripe (card), PayPal — server-side on API routes
+- Deploy: Vercel + Sanity hosted CMS
+
+1. SITEMAP & ROUTES
+-------------------
+| Path | Page | Purpose | SEO Title |
+|------|------|---------|-----------|
+| / | Home | Convert visitors, showcase services + portfolio/about | Marobix Technologies — Web Development, IT Solutions & POS Systems in Kenya |
+| /about | About | Build trust, tell company story | About Us \| Marobix Technologies |
+| /services | Services overview | List all service categories | IT & Web Development Services \| Marobix Technologies |
+| /services/[slug] | Service detail (template) | Convert on one service | {Service Name} Services in Kenya \| Marobix Technologies |
+| /portfolio | Portfolio gallery | Prove capability at scale | Our Work \| Portfolio \| Marobix Technologies |
+| /portfolio/[slug] | Case study (template) | Deep-dive proof + CTA | {Project Name} Case Study \| Marobix Technologies |
+| /pricing | Pricing/Plans | Set expectations, reduce friction | Pricing & Plans \| Marobix Technologies |
+| /checkout | Checkout/Payment | Convert paid intent to payment | Checkout \| Marobix Technologies |
+| /checkout/confirmation | Payment confirmation | Confirm + next steps | Order Confirmed \| Marobix Technologies |
+| /contact | Contact / Get a Quote | Capture lead | Contact Us \| Get a Free Quote \| Marobix Technologies |
+| /blog | Blog index | SEO + authority | Insights & Blog \| Marobix Technologies |
+| /blog/[slug] | Article template | SEO long-tail capture | {Article Title} \| Marobix Technologies |
+| /careers | Careers (optional MVP) | Recruiting | Careers \| Marobix Technologies |
+| /privacy | Privacy Policy | Compliance | Privacy Policy \| Marobix Technologies |
+| /terms | Terms of Service | Compliance | Terms of Service \| Marobix Technologies |
+
+MVP-optional: /pricing, /checkout, /checkout/confirmation, /careers (all shipped).
+
+2. PAGE-BY-PAGE MVP SPEC
+------------------------
+2.1 Home
+- Header + sticky nav with "Get a Quote" CTA
+- Hero (headline, subhead, 2 CTAs, trust badges: "50+ projects", "Clients in X countries")
+- Logo strip / trusted-by row (optional)
+- Services grid (8 cards, icon + 1-line blurb -> service page)
+- Featured portfolio (6 cards, filter by category)
+- Why Marobix (3-4 value props with icons)
+- Testimonial carousel (3+)
+- Process strip: Discover -> Design -> Build -> Launch -> Support
+- CTA banner ("Ready to build something great?")
+- Footer
+Primary CTA: "Get a Free Quote" -> /contact
+Desktop: 12-col grid, hero full-bleed, services 4 cols, portfolio 3 cols, max width 1280px.
+Mobile: single col; hero stacked; services 1 col (2 col >=480px); portfolio + testimonials swipe carousels.
+Newsletter form: email required, valid regex, inline error, success toast.
+
+2.2 About
+Hero statement -> Company story (2-3 paras) -> Mission/Vision -> Team grid (optional) -> Stats bar -> CTA "Work with us" -> /contact.
+
+2.3 Services (Overview)
+Intro hero -> Services grid (8+ cards) -> comparison note -> CTA.
+8 services: Website Development, Ecommerce Development, POS System Development, IT Sourcing & Procurement, Data Backup & Recovery, AI Integrations, Cloud & Hosting Setup, IT Support & Maintenance.
+
+2.4 Service Detail (template /services/[slug])
+Breadcrumb -> Hero (name, value prop, CTA) -> What's included (bullets) -> Process (3-5 steps) -> Related portfolio (2-3 by tag) -> Pricing hint ("Starting from KES X" or "Custom quote") -> FAQ accordion (3-5 Qs) -> CTA banner.
+CTA -> /contact?service={slug} pre-fills lead form.
+
+2.5 Portfolio (Gallery)
+Hero + filter/tag bar (Web, Ecommerce, POS, AI, IT Sourcing) -> grid (image, title, category tag, 1-line outcome) -> Load more / pagination -> CTA.
+Desktop 3-col masonry/grid; mobile 1-col, chips horizontal-scroll.
+
+2.6 Case Study (template /portfolio/[slug])
+Hero image + title + client + tags -> Overview (client, industry, timeline, tech stack badges) -> Challenge -> Solution (2-3 screenshots) -> Results (metric callouts) -> Testimonial -> Related projects -> CTA.
+
+2.7 Pricing / Plans (productized only)
+Hero -> 3-tier cards (Starter / Business / Enterprise) -> feature comparison table -> note: IT sourcing/POS/custom AI is quote-based -> FAQ -> CTA.
+Recommendation implemented: publish only productized offerings (e.g. "Basic Business Website — from KES 35,000"), route everything else to "Get a Quote".
+
+2.8 Checkout / Payments
+Order summary (service/plan, price, currency) -> Customer details form -> Payment method selector (M-Pesa / Card via Stripe / PayPal) -> Payment action -> Confirmation.
+Fields: Full name (req), Email (req, valid), Phone (req for M-Pesa; E.164 or 07XXXXXXXX), Company (opt), Billing address (req for card), Order notes (opt, max 500).
+Validation: required checks, email regex, phone regex, amount must match selected plan server-side.
+Security: all amount/currency re-validated server-side before creating payment intent — never trust client payload.
+
+2.9 Contact / Get a Quote
+Hero -> Contact form -> Direct contact info (email, phone, WhatsApp, address) -> Map embed (optional) -> Social links.
+Fields: Name (req), Email (req), Phone (opt), Company (opt), Service interested (dropdown, pre-filled via ?service=), Budget range (opt), Message (req, min 10 max 2000), Consent checkbox (req, GDPR/DPA).
+Validation: regex, honeypot + reCAPTCHA-ready, consent required.
+
+2.10 Blog (Index + Article)
+Index: hero -> filter by category -> card grid (image, title, excerpt, date, read time) -> pagination.
+Article: title, hero image, author + date, rich-text body (CMS-rendered), share buttons, related articles, newsletter CTA.
+MVP: no comments.
+
+2.11 Careers (optional MVP)
+Intro + list of open roles (title, type, location, Apply mailto) + culture blurb.
+
+2.12 Legal (Privacy Policy & Terms)
+Static CMS-editable pages. Reference Kenya DPA 2019, data controller identity, data collected, third-party processors (M-Pesa/Stripe/PayPal), user rights, cookie/consent banner reference, contact for data requests.
+NOTE: must be drafted/reviewed by a lawyer before launch — content is placeholder, treated as CMS content.
+
+3. UI COMPONENT LIBRARY — STATES & A11Y
+--------------------------------------
+Header: sticky -> solid bg after scroll threshold; mobile hamburger slide-in drawer; focus trap; aria-expanded.
+Hero: real <h1>; 4.5:1 contrast on overlay text.
+Service Card: hover lift + shadow; whole card = single focusable <a>; no nested interactive elements.
+Portfolio Card: hover image zoom + overlay tag; click -> case study; descriptive alt text.
+Testimonial Carousel: auto-rotate 6s, pause on hover/focus, arrows + dots, pause button; dots aria-label="Go to slide N".
+Pricing Card: "recommended" tier highlighted; table structure; checkmarks aria-label="included".
+Contact Form: inline validation on blur, submit disabled until valid, loading spinner, success/error toast; labels for/id, errors aria-describedby, aria-live="polite".
+Newsletter Form: same as contact, compact.
+Footer: multi-column, accordion on mobile; <footer> landmark; <nav aria-label="Footer">.
+Buttons: primary/secondary/ghost; hover/active/disabled/loading; min 44x44px; disabled uses aria-disabled.
+Banners/Alerts: success/error/info variants, dismissible; role="alert" or role="status".
+Chips/Tags: toggle active state; aria-pressed.
+Iconography: Lucide, consistent stroke width; decorative aria-hidden, functional aria-label.
+Badges: tech-stack, "New"; text-based, not color-only.
+
+4. VISUAL DIRECTION + STYLE GUIDE (LIGHT)
+-----------------------------------------
+Brand tone: Confident, modern, technically credible but approachable — "global capability, local roots."
+Primary: Deep Blue #0B3D91 (trust, tech)
+Secondary: Slate/Charcoal #1E2530 (text, backgrounds)
+Accent: Amber/Signal Orange #F5A623 (CTAs, highlights)
+Neutral background: #F7F8FA
+Success: #1E9E5A  Error: #D64545
+Headings: "Sora" (fallback system-ui, sans-serif)  Body: "Inter" (fallback -apple-system, "Segoe UI", sans-serif)
+Spacing: 4px base — 4/8/16/24/32/48/64/96
+Buttons: primary = filled amber, white text, 8px radius, subtle shadow hover; secondary = outline deep-blue fills on hover; min height 44px.
+Forms: 1px border #D0D4DA, 8px radius, focus ring accent 2px offset, error red border + helper text.
+
+Microcopy:
+Hero headlines:
+1. "IT solutions built in Kenya, engineered for the world."
+2. "From website to point-of-sale — one team, every tech need."
+3. "Reliable technology partners for growing businesses, anywhere."
+CTAs: "Get a Free Quote" / "See Our Work" / "Start Your Project"
+Value props:
+1. "End-to-end IT delivery — we design, build, source, and support."
+2. "Trusted by businesses across Kenya, Africa, and beyond."
+3. "Fast, transparent, and built to scale with you."
+
+5. EXAMPLE COPY (READY TO PASTE)
+---------------------------------
+Homepage hero paragraph: "Marobix Technologies helps businesses in Kenya and beyond build, launch, and scale their digital presence — from custom websites and ecommerce stores to point-of-sale systems, IT hardware sourcing, and AI-powered tools. One team, every tech need, delivered with care."
+About blurb: "Marobix Technologies started with a simple goal: make world-class IT and web development accessible to businesses of every size, wherever they are. Based in Kenya and working with clients across the globe, our team combines local insight with global technical standards to deliver websites, software, and IT infrastructure that actually move businesses forward."
+8 Service blurbs:
+1. Website Development — Custom, fast-loading, mobile-first websites built to convert visitors into customers.
+2. Ecommerce Development — Full-featured online stores with secure checkout, inventory, and payment integration.
+3. POS System Development — Point-of-sale software tailored to retail, hospitality, and service businesses.
+4. IT Sourcing & Procurement — We source, vet, and deliver the right hardware and software for your business needs.
+5. Data Backup & Recovery — Automated, secure backup solutions so your business data is never at risk.
+6. AI Integrations — Chatbots, automation, and AI-powered tools built into your existing systems.
+7. Cloud & Hosting Setup — Reliable hosting, domain, and cloud infrastructure setup and management.
+8. IT Support & Maintenance — Ongoing technical support to keep your systems running smoothly.
+6 Portfolio items:
+1. Nkuru Retail POS — Custom POS for multi-branch retail chain. Tech: Node.js, React, PostgreSQL. Outcome: Checkout time reduced 45%.
+2. GreenLeaf Organics Ecommerce — Full online store with M-Pesa + card checkout. Tech: Next.js, Stripe, Daraja API. Outcome: Online sales up 3x in 6 months.
+3. Meru Traders Business Website — Corporate site with lead capture + service catalog. Tech: Next.js, Tailwind, Sanity CMS. Outcome: Lead inquiries up 60%.
+4. DataGuard Backup Portal — Client-facing dashboard for automated cloud backup monitoring. Tech: React, Node.js, AWS S3. Outcome: Backup failures reduced to near zero.
+5. SwiftCart IT Sourcing Platform — Internal procurement tracking tool for bulk IT hardware. Tech: Django, PostgreSQL. Outcome: Procurement turnaround 2 weeks -> 4 days.
+6. AmaniBot AI Assistant — AI support chatbot. Tech: Python, OpenAI API, React widget. Outcome: First-response time from hours to seconds.
+3 Testimonials:
+1. "Marobix delivered our new site and POS integration ahead of schedule — our checkout process has never been smoother." — Retail Client
+2. "They understood exactly what we needed and handled everything from hosting to payments. Genuinely reliable team." — Ecommerce Client
+3. "Working with a Kenya-based team that thinks globally was exactly what our business needed." — International Client
+
+6. BUILD ORDER
+--------------
+1. Scaffold + design tokens + shared components
+2. Sanity schemas + data layer (GROQ fetch; seed data fallback when env not configured)
+3. Marketing pages: Home -> About -> Services (index+detail)
+4. Portfolio (gallery + case study)
+5. Blog + legal + 404
+6. Contact form (API, validation, spam)
+7. Pricing + Checkout + payments API + confirmation
+8. Careers, SEO polish (sitemap, robots, OG, cookie banner)
+9. Lint/build + responsive + a11y review
+
+7. OUT OF SCOPE (MVP)
+---------------------
+Blog comments. Admin beyond Sanity Studio. Team photos (placeholders + Sanity images).
+
+8. VERIFICATION
+---------------
+npm run lint, npm run build, manual responsive pass (375/480/768/1280px), keyboard + screen-reader spot checks.
