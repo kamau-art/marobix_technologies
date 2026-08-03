@@ -1,0 +1,48 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-}
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID:-}
+        NEXT_PUBLIC_SANITY_DATASET: ${NEXT_PUBLIC_SANITY_DATASET:-}
+    image: marobix-web:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+    ports:
+      - "80:3000"
+    volumes:
+      - next-cache:/app/.next/cache
+    init: true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # When your domain is ready, enable HTTPS by:
+  #   1. Uncomment this caddy service
+  #   2. Change web ports from "80:3000" to "127.0.0.1:3000:3000"
+  #   3. Edit Caddyfile to your real domain (e.g. marobix.com)
+  #   4. docker compose up -d
+  # caddy:
+  #   image: caddy:2-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy-data:/data
+  #     - caddy-config:/config
+  #   depends_on:
+  #     - web
+
+volumes:
+  next-cache:
+  # caddy-data:
+  # caddy-config:

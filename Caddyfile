@@ -1,0 +1,5 @@
+# Replace "marobix.com" with your real domain and uncomment the caddy
+# service in docker-compose.yml when you are ready for HTTPS.
+marobix.com {
+    reverse_proxy web:3000
+}

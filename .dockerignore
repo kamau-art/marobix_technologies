@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.gitignore
+.env*
+SESSION.md
+README.md
+pot.txt
+scripts
+npm-debug.log*
