@@ -216,6 +216,61 @@ sudo systemctl reload nginx
 
 ---
 
+## 6c. Upgrading an already-live server (old build → current)
+
+If the site is **already deployed** (e.g. the older Sanity-based build), don't start over —
+your nginx config keeps working unchanged because the app still listens on `127.0.0.1:3000`.
+
+1. Push the latest code from your laptop (if you haven't):
+
+```bash
+git push
+```
+
+2. On the server, in the existing `marobix` folder, pull and review the env vars — the
+   set changed (Sanity/Stripe vars are gone; DB + payment vars are new):
+
+```bash
+git pull
+cp .env.example .env.new
+diff .env .env.new     # add the new keys, drop the old ones
+mv .env.new .env
+nano .env              # set DATABASE_URL etc. — see the table in step 5
+```
+
+   Minimum for the site to work: `DATABASE_URL` (+ `POSTGRES_*`). Leave payment keys
+   empty to start — checkout shows a clean "not configured" error until you add them.
+
+3. Rebuild — this also creates the new `db` (PostgreSQL) service. On first run the app
+   auto-creates and auto-seeds the `content` table, so no manual seeding is needed:
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+   Then make sure nginx still points at the app's new address (it must be `127.0.0.1:3000`):
+
+```bash
+grep -rn proxy_pass /etc/nginx/sites-enabled/
+```
+
+   If it targets something else (e.g. a container IP from the old setup), update the
+   `location /` block to `proxy_pass http://127.0.0.1:3000;` and reload:
+
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+4. Confirm the old build is really gone:
+
+```bash
+curl -I https://marobix.com/admin       # expect 401 (was 404 on the old build)
+curl -I https://marobix.com/studio      # expect 404 (was 500/broken)
+```
+
+---
+
 ## 7. Verify it's live
 
 From your laptop:
