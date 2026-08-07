@@ -13,7 +13,7 @@ services:
       # Inside the compose network the DB host is "db" (not localhost, which .env uses for local dev)
       - DATABASE_URL=postgres://${POSTGRES_USER:-marobix}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-marobix}
     ports:
-      # Production: Caddy owns 80/443 and proxies to web:3000 on the internal network.
+      # Production: host nginx owns 80/443 (Let's Encrypt) and proxies to this loopback port.
       # Bind to loopback so the app is never exposed directly.
       - "127.0.0.1:3000:3000"
     volumes:
@@ -51,22 +51,6 @@ services:
       retries: 5
       start_period: 15s
 
-  # Caddy reverse proxy: terminates TLS (auto Let's Encrypt) and proxies to web:3000.
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
-    depends_on:
-      - web
-
 volumes:
   next-cache:
   pgdata:
-  caddy-data:
-  caddy-config:

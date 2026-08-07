@@ -1,7 +1,9 @@
-# Deploy Marobix to Production (VPS + Docker + Caddy HTTPS)
+# Deploy Marobix to Production (VPS + Docker + nginx HTTPS)
 
 > Copy-paste runbook. One block = one command. Replace `YOUR.VPS.IP` and
 > `<your-password>` / `<your-admin-password>` with your real values.
+> This runbook assumes you already have **nginx + Let's Encrypt** set up on the
+> host (step 6 wires the app into it). No Caddy.
 
 ---
 
@@ -13,6 +15,8 @@ Before you start, make sure you have:
 - [ ] Your code **committed and pushed** to GitHub (`kamau-art/marobix_technologies`).
       The VPS clones from GitHub, so nothing uncommitted will be on the server.
 - [ ] Your domain **`marobix.com`** — DNS is covered in step 2, but the registrar login is ready.
+- [ ] **nginx installed** and serving with a **Let's Encrypt certificate** for `marobix.com`
+      (via `certbot`). If not done yet, see step 6b — the app must be running first.
 - [ ] Payment credentials for launch (see step 8). You can deploy with sandbox creds first
       and switch to live later — the site will work either way.
 
@@ -55,8 +59,7 @@ At your domain registrar, add these records for `marobix.com`:
 | `A` | `@` | `YOUR.VPS.IP` |
 | `A` | `www` | `YOUR.VPS.IP` |
 
-DNS can take a few minutes to a few hours to spread. Caddy needs it resolved
-**before** it can issue the HTTPS certificate (step 6). Verify with:
+DNS can take a few minutes to a few hours to spread. Verify with:
 
 ```bash
 dig +short marobix.com
@@ -64,7 +67,7 @@ dig +short www.marobix.com
 ```
 
 Both should print `YOUR.VPS.IP`. (If you use Cloudflare, make sure the record is
-**DNS-only** / grey cloud — not proxied — or Caddy can't get a certificate.)
+**DNS-only** / grey cloud — not proxied — or Let's Encrypt can't validate.)
 
 ---
 
@@ -79,7 +82,7 @@ sudo ufw status
 ```
 
 > Also allow 80/443 in your VPS provider's cloud-firewall dashboard if it has one.
-> Only 22, 80 and 443 are open — the database (port 5433) stays private to the server.
+> Only 22, 80 and 443 are open — the database and the app's loopback port stay private.
 
 ---
 
@@ -136,16 +139,17 @@ Save: `Ctrl+O`, `Enter`, `Ctrl+X`.
 
 ---
 
-## 6. Build and start (HTTPS automatic)
+## 6. Build, start, and wire up nginx
+
+### 6a. Build and start the app
 
 ```bash
 docker compose up -d --build
 ```
 
-First build compiles the Next.js app — allow 3–6 minutes. On success you get **three
-services**: `web` (the app, bound to loopback only), `db` (PostgreSQL, data in the
-`pgdata` volume), and `caddy` (reverse proxy that auto-issues a Let's Encrypt cert for
-`marobix.com` + `www` and proxies 80/443 → `web:3000`).
+First build compiles the Next.js app — allow 3–6 minutes. On success you get **two
+services**: `web` (the app, listening on **`127.0.0.1:3000`** — loopback only) and `db`
+(PostgreSQL, data in the `pgdata` volume).
 
 Check everything is up and healthy:
 
@@ -159,6 +163,57 @@ All `STATUS` values should be `Up` / `healthy`. If anything failed:
 docker compose logs -f
 ```
 
+Confirm the app answers locally before touching nginx:
+
+```bash
+curl -I http://127.0.0.1:3000/            # expect HTTP/1.1 200
+```
+
+### 6b. Point nginx at the app (your existing Let's Encrypt setup)
+
+If nginx + a certificate for `marobix.com` already exist, just add a server block that
+proxies to the app. Create `/etc/nginx/sites-available/marobix`:
+
+```nginx
+server {
+    listen 80;
+    server_name marobix.com www.marobix.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name marobix.com www.marobix.com;
+
+    ssl_certificate     /etc/letsencrypt/live/marobix.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/marobix.com/privkey.pem;
+
+    client_max_body_size 10m;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 300s;
+    }
+}
+```
+
+Enable it and reload:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/marobix /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+> If nginx isn't set up yet, get the app running (step 6a) and obtain a certificate:
+> `sudo apt install certbot python3-certbot-nginx && sudo certbot --nginx -d marobix.com -d www.marobix.com`
+> (certbot will insert the ssl lines above for you; then add the `location /` block).
+
 ---
 
 ## 7. Verify it's live
@@ -168,7 +223,7 @@ From your laptop:
 ```bash
 curl -I https://marobix.com/                 # expect HTTP/1.1 200
 curl -I https://marobix.com/pricing          # expect 200
-curl -I https://www.marobix.com/             # expect 200 (Caddy redirects/uses same cert)
+curl -I https://www.marobix.com/             # expect 200
 curl -I https://marobix.com/admin            # expect 401 (auth required)
 ```
 
@@ -275,8 +330,8 @@ To wipe data too: `docker compose down -v` (irreversible).
 |---|---|
 | `docker compose ps` shows `Restarting` | `docker compose logs web` to see the error |
 | `db` keeps restarting | `docker compose logs db`; check `POSTGRES_PASSWORD` is set in `.env` |
-| Browser shows an untrusted/cert error | DNS not pointing at this server yet — wait for propagation (`dig +short marobix.com`), then `docker compose restart caddy` |
-| Caddy fails to get a certificate | Port 80/443 blocked, DNS not pointing here, or the domain is behind a proxy (Cloudflare orange cloud) — see step 2 |
+| Browser shows an untrusted/cert error | DNS not pointing at this server yet — wait for propagation (`dig +short marobix.com`), then `sudo certbot renew` + `sudo systemctl reload nginx` |
+| `curl http://127.0.0.1:3000/` works but the domain 502s | nginx not proxying, or `proxy_pass http://127.0.0.1:3000;` missing/typoed in `/etc/nginx/sites-enabled/marobix` |
 | Site loads but checkout returns 502 | Payment creds not set yet — expected until you complete step 8 |
 | M-Pesa returns "M-Pesa is not configured" | One of `MPESA_CONSUMER_KEY/SECRET/SHORTCODE/PASSKEY/CALLBACK_URL` is empty in `.env` |
 | M-Pesa push never arrives on the phone | Sandbox phone must be `254708374149`; production requires `MPESA_ENV=production` + live shortcode/passkey |
@@ -284,15 +339,14 @@ To wipe data too: `docker compose down -v` (irreversible).
 | Site up but pages show no content | `content` table empty and `DATABASE_URL` unreachable — `docker compose ps` + `docker compose logs db` |
 | `/admin` returns 404 | `ADMIN_USERNAME`/`ADMIN_PASSWORD` not set in `.env` |
 | Forms work but no leads saved | DB down — `docker compose ps` + `docker compose logs db` |
-| Port 80/443 already in use | `sudo lsof -i :80` / `sudo lsof -i :443` to find the culprit |
+| Port 80/443 already in use | nginx is expected to own them. `sudo lsof -i :80` to check nothing else is |
 
 ---
 
 ## Files that make this work
 
 - `Dockerfile` — multi-stage build (deps → build → slim runtime, non-root user)
-- `docker-compose.yml` — `web` + `db` (PostgreSQL) + `caddy` (auto-HTTPS), healthchecks, auto-restart, persisted volumes
-- `Caddyfile` — auto-issues Let's Encrypt TLS for `marobix.com` + `www`, proxies to `web:3000`
+- `docker-compose.yml` — `web` + `db` (PostgreSQL), healthchecks, auto-restart, persisted volumes
 - `.dockerignore` — keeps secrets/build artifacts out of the image
 - `next.config.mjs` — `output: "standalone"` for the slim runtime image
 - `src/lib/db.js` — PostgreSQL access (content + leads + orders, auto-seeded content)

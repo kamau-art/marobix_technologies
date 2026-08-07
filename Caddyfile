@@ -1,5 +1,0 @@
-# Production reverse proxy — Caddy auto-provisions Let's Encrypt TLS for both
-# hosts. DNS for marobix.com and www.marobix.com must point at this server's IP.
-marobix.com, www.marobix.com {
-    reverse_proxy web:3000
-}
