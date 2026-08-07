@@ -58,7 +58,7 @@ export const services = [
     ],
     pricingHint: 'Custom quote',
     faqs: [
-      { question: 'Which payment methods can my store accept?', answer: 'M-Pesa (Daraja STK push), Visa/Mastercard via Stripe, and PayPal.' },
+      { question: 'Which payment methods can my store accept?', answer: 'M-Pesa (Daraja STK push) and PayPal — cards and PayPal accounts for international buyers.' },
       { question: 'Can you migrate my existing store?', answer: 'Yes — we migrate products, customers, and order history from most platforms.' },
       { question: 'Do you handle delivery logistics?', answer: 'We integrate shipping calculators and courier options, and you manage fulfilment from your dashboard.' },
     ],
@@ -613,15 +613,15 @@ export const legalPages = {
     sections: [
       {
         heading: 'Who we are (data controller)',
-        body: 'Marobix Technologies is the data controller. Contact us at hello@marobix.com for any data protection requests.',
+        body: 'Marobix Technologies is the data controller. Contact us at contact@marobix.com for any data protection requests.',
       },
       {
         heading: 'What data we collect',
-        body: 'We collect information you give us through our contact and quote forms (name, email, phone, company, message), and payment data processed by our payment processors (Stripe and PayPal).',
+        body: 'We collect information you give us through our contact and quote forms (name, email, phone, company, message), and payment data needed to process your order via our payment providers (PayPal and M-Pesa).',
       },
       {
         heading: 'Third-party processors',
-        body: 'Payment data is processed by Stripe and PayPal under their own privacy policies. We do not store full card numbers.',
+        body: 'Payment data is processed by PayPal and Safaricom (M-Pesa) under their own privacy policies. We do not store full card numbers.',
       },
       {
         heading: 'How we use your data',
@@ -629,7 +629,7 @@ export const legalPages = {
       },
       {
         heading: 'Your rights',
-        body: 'You have the right to access, correct, or delete your personal data, and to object to or restrict processing. Email hello@marobix.com to exercise these rights.',
+        body: 'You have the right to access, correct, or delete your personal data, and to object to or restrict processing. Email contact@marobix.com to exercise these rights.',
       },
       {
         heading: 'Cookies',
@@ -641,7 +641,7 @@ export const legalPages = {
       },
       {
         heading: 'Contact for data requests',
-        body: 'Email hello@marobix.com or write to Marobix Technologies, Nairobi, Kenya.',
+        body: 'Email contact@marobix.com or write to Marobix Technologies, Nairobi Town Centre, Kenya.',
       },
     ],
   },
@@ -682,7 +682,7 @@ export const legalPages = {
       },
       {
         heading: 'Contact',
-        body: 'Questions about these Terms? Email hello@marobix.com.',
+        body: 'Questions about these Terms? Email contact@marobix.com.',
       },
     ],
   },

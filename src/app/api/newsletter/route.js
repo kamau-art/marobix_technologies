@@ -1,4 +1,4 @@
-import { sanityCreate, sanityWritable } from '@/lib/sanity';
+import { createLead } from '@/lib/db';
 import { isValidEmail } from '@/lib/validation';
 
 export async function POST(request) {
@@ -16,13 +16,10 @@ export async function POST(request) {
   }
 
   try {
-    if (sanityWritable) {
-      await sanityCreate({
-        _type: 'lead',
-        email,
-        source: 'newsletter',
-      });
-    }
+    await createLead({
+      email,
+      source: 'newsletter',
+    });
   } catch {
     return Response.json(
       { error: 'Could not subscribe right now. Please try again.' },

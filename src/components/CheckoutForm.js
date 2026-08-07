@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CreditCard, CircleDollarSign, AlertCircle, Smartphone } from 'lucide-react';
+import { CircleDollarSign, AlertCircle, Smartphone } from 'lucide-react';
 import Button from './ui/Button';
 import { isValidEmail } from '@/lib/validation';
 import { formatKES } from '@/lib/utils';
@@ -9,15 +9,15 @@ import { cn } from '@/lib/utils';
 
 const METHODS = [
   {
-    id: 'card',
-    label: 'Card',
-    hint: 'Debit / credit via Stripe',
-    icon: CreditCard,
+    id: 'mpesa',
+    label: 'M-Pesa',
+    hint: 'Kenya — instant STK push to your phone',
+    icon: Smartphone,
   },
   {
     id: 'paypal',
     label: 'PayPal',
-    hint: 'Pay with your PayPal account',
+    hint: 'International buyers — pay by card or PayPal account',
     icon: CircleDollarSign,
   },
 ];
@@ -26,16 +26,21 @@ function fieldError(name, value, method) {
   const v = value.trim();
   if (name === 'fullName' && v.length < 2) return 'Please enter your full name.';
   if (name === 'email' && !isValidEmail(value)) return 'Please enter a valid email address.';
-  if (name === 'phone' && v && !/^(?:\+?254|0)[17]\d{8}$/.test(v.replace(/[\s()-]/g, '')))
-    return 'Use a valid phone number, e.g. 0712345678.';
-  if (name === 'billingAddress' && method === 'card' && v.length < 5)
-    return 'A billing address is required for card payments.';
+  if (name === 'phone') {
+    if (method === 'mpesa') {
+      if (!v) return 'A valid M-Pesa phone number is required (e.g. 0712345678).';
+      if (!/^(?:\+?254|0)[17]\d{8}$/.test(v.replace(/[\s()-]/g, '')))
+        return 'Use a valid M-Pesa phone number, e.g. 0712345678.';
+    } else if (v && !/^(?:\+?254|0)[17]\d{8}$/.test(v.replace(/[\s()-]/g, ''))) {
+      return 'Use a valid phone number, e.g. 0712345678.';
+    }
+  }
   if (name === 'notes' && v.length > 500) return 'Notes must be 500 characters or fewer.';
   return '';
 }
 
 export default function CheckoutForm({ plan }) {
-  const [method, setMethod] = useState('card');
+  const [method, setMethod] = useState('paypal');
   const [values, setValues] = useState({
     fullName: '',
     email: '',
@@ -68,7 +73,7 @@ export default function CheckoutForm({ plan }) {
     if (!validateAll()) return;
     setStatus('loading');
     try {
-      const endpoint = { card: '/api/stripe', paypal: '/api/paypal' }[method];
+      const endpoint = { paypal: '/api/paypal', mpesa: '/api/mpesa' }[method];
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -139,7 +144,12 @@ export default function CheckoutForm({ plan }) {
 
           <div>
             <label htmlFor="checkout-phone" className="mb-1.5 block text-sm font-semibold text-secondary">
-              Phone <span className="font-normal text-muted">(optional)</span>
+              Phone{' '}
+              {method === 'mpesa' ? (
+                <span className="font-normal text-muted">(M-Pesa number)</span>
+              ) : (
+                <span className="font-normal text-muted">(optional)</span>
+              )}
             </label>
             <input
               id="checkout-phone"
@@ -175,7 +185,7 @@ export default function CheckoutForm({ plan }) {
 
           <div className="sm:col-span-2">
             <label htmlFor="checkout-address" className="mb-1.5 block text-sm font-semibold text-secondary">
-              Billing address {method === 'card' ? '*' : '(optional)'}
+              Billing address <span className="font-normal text-muted">(optional)</span>
             </label>
             <input
               id="checkout-address"
@@ -249,10 +259,6 @@ export default function CheckoutForm({ plan }) {
             </label>
           ))}
         </div>
-        <p className="mt-4 flex items-center gap-2 text-sm text-muted">
-          <Smartphone aria-hidden="true" className="size-4 text-primary" />
-          M-Pesa payments are coming soon — in the meantime, contact us to pay via M-Pesa.
-        </p>
       </section>
 
       {formError && (
@@ -264,10 +270,12 @@ export default function CheckoutForm({ plan }) {
 
       <div className="mt-8 flex flex-col items-start gap-3">
         <Button type="submit" size="lg" loading={status === 'loading'}>
-          {method === 'card' ? 'Pay by Card' : 'Pay with PayPal'}
+          {method === 'mpesa' ? 'Pay with M-Pesa' : 'Pay with PayPal'}
         </Button>
         <p className="text-xs text-muted">
-          Payments are processed securely by Stripe or PayPal. We never store your payment details.
+          {method === 'mpesa'
+            ? 'M-Pesa payments are processed by Safaricom. We never see or store your M-Pesa PIN.'
+            : 'Payments are processed securely by PayPal. We never store your payment details.'}
         </p>
       </div>
     </form>

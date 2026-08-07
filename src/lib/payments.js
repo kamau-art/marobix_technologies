@@ -1,4 +1,4 @@
-import { sanityCreate, sanityWritable } from './sanity';
+import { createOrder, updateOrderStatus as updateOrderInDb } from './db';
 import { getPricing } from './data';
 import { isValidPhone } from './validation';
 
@@ -141,66 +141,45 @@ export async function initiateMpesaStkPush({ amount, phone, orderId, planName })
   };
 }
 
-export function getStripeConfig() {
-  return {
-    configured: Boolean(process.env.STRIPE_SECRET_KEY),
-    secretKey: process.env.STRIPE_SECRET_KEY || '',
-    baseUrl: 'https://api.stripe.com/v1',
-  };
-}
-
-export async function createStripeSession({ amount, planName, orderId, planId, successUrl, cancelUrl }) {
-  const cfg = getStripeConfig();
-  if (!cfg.configured) {
-    throw new Error('Card payments are not configured. Please contact us to complete your order.');
-  }
-  const body = new URLSearchParams({
-    mode: 'payment',
-    client_reference_id: orderId,
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-    'line_items[0][quantity]': '1',
-    'line_items[0][price_data][currency]': CURRENCY.toLowerCase(),
-    'line_items[0][price_data][unit_amount]': String(Math.round(amount * 100)),
-    'line_items[0][price_data][product_data][name]': `Marobix ${planName} plan`,
-    'metadata[orderId]': orderId,
-    'metadata[planId]': planId,
-  });
-  const res = await fetch(`${cfg.baseUrl}/checkout/sessions`, {
+export async function queryMpesaStatus(checkoutRequestId) {
+  const cfg = getMpesaConfig();
+  if (!cfg.configured || !checkoutRequestId) return null;
+  const token = await getMpesaToken();
+  const timestamp = mpesaTimestamp();
+  const password = Buffer.from(
+    `${cfg.shortcode}${cfg.passkey}${timestamp}`
+  ).toString('base64');
+  const res = await fetch(`${cfg.baseUrl}/mpesa/stkpushquery/v1/query`, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${cfg.secretKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
     },
-    body,
+    body: JSON.stringify({
+      BusinessShortCode: cfg.shortcode,
+      Password: password,
+      Timestamp: timestamp,
+      CheckoutRequestID: checkoutRequestId,
+    }),
     cache: 'no-store',
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.error?.message || 'Stripe checkout failed. Please try again.');
+  const stk = data?.Body?.stkCallback;
+  if (!stk) return null;
+  const success = Number(stk.ResultCode) === 0;
+  let receipt = '';
+  for (const item of stk.CallbackMetadata?.Item || []) {
+    if (item.Name === 'MpesaReceiptNumber') receipt = item.Value || '';
   }
-  return data;
-}
-
-export async function verifyStripeSession(sessionId) {
-  const cfg = getStripeConfig();
-  if (!cfg.configured) return { ok: false, error: 'Stripe is not configured.' };
-  const res = await fetch(`${cfg.baseUrl}/checkout/sessions/${sessionId}`, {
-    headers: { Authorization: `Bearer ${cfg.secretKey}` },
-    cache: 'no-store',
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) return { ok: false, error: 'Could not verify payment.' };
   return {
-    ok: data.payment_status === 'paid',
-    status: data.payment_status,
-    orderId: data.client_reference_id,
-    amount: data.amount_total ? data.amount_total / 100 : null,
-    currency: data.currency,
+    success,
+    resultCode: stk.ResultCode,
+    resultDesc: stk.ResultDesc,
+    receipt,
   };
 }
 
-export function getPaypalConfig() {
+export async function getPaypalConfig() {
   const env = process.env.PAYPAL_ENV === 'production' ? 'production' : 'sandbox';
   return {
     env,
@@ -305,46 +284,11 @@ export async function createOrderDoc({
   paymentRef,
   customer,
 }) {
-  if (!sanityWritable) return null;
-  try {
-    return await sanityCreate({
-      _type: 'order',
-      orderId,
-      planId,
-      planName,
-      amount,
-      currency: CURRENCY,
-      status,
-      method,
-      paymentRef: paymentRef || '',
-      customer: {
-        fullName: customer.fullName || '',
-        email: customer.email || '',
-        phone: customer.phone || '',
-        company: customer.company || '',
-        billingAddress: customer.billingAddress || '',
-        notes: customer.notes || '',
-      },
-    });
-  } catch {
-    return null;
-  }
+  return createOrder({ orderId, planId, planName, amount, method, status, paymentRef, customer });
 }
 
 export async function updateOrderStatus(orderId, { status, paymentRef }) {
-  if (!sanityWritable || !orderId) return;
-  try {
-    const { client } = await import('./sanity');
-    const result = await client.fetch(
-      `*[_type == "order" && orderId == $orderId][0]._id`,
-      { orderId }
-    );
-    if (!result) return;
-    const writeClient = (await import('./sanity')).writeClient;
-    await writeClient.patch(result).set({ status, paymentRef: paymentRef || '' }).commit();
-  } catch {
-    /* best effort */
-  }
+  return updateOrderInDb(orderId, { status, paymentRef });
 }
 
 export function validateCustomer(payload) {

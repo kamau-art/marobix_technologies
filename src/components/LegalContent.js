@@ -53,7 +53,7 @@ export default function LegalContent({ page }) {
           <div className="mt-16 rounded-2xl border border-line bg-surface p-8 text-center">
             <h2 className="text-xl font-bold text-secondary">Questions?</h2>
             <p className="mt-2 text-muted">
-              Email us at <a className="font-semibold text-primary underline" href="mailto:hello@marobix.com">hello@marobix.com</a> or reach out through our contact page.
+              Email us at <a className="font-semibold text-primary underline" href="mailto:contact@marobix.com">contact@marobix.com</a> or reach out through our contact page.
             </p>
             <div className="mt-6">
               <Button href="/contact" variant="dark">

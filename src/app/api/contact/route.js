@@ -1,4 +1,4 @@
-import { sanityCreate, sanityWritable } from '@/lib/sanity';
+import { createLead } from '@/lib/db';
 import {
   isValidEmail,
   isValidName,
@@ -57,19 +57,16 @@ export async function POST(request) {
   }
 
   try {
-    if (sanityWritable) {
-      await sanityCreate({
-        _type: 'lead',
-        name,
-        email,
-        phone,
-        company,
-        service,
-        budget,
-        message,
-        source: 'contact',
-      });
-    }
+    await createLead({
+      name,
+      email,
+      phone,
+      company,
+      service,
+      budget,
+      message,
+      source: 'contact',
+    });
   } catch {
     return Response.json(
       { error: 'Could not submit your message right now. Please try again.' },

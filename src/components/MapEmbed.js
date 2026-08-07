@@ -1,5 +1,5 @@
 export default function MapEmbed({ address }) {
-  const query = encodeURIComponent(address || 'Nairobi, Kenya');
+  const query = encodeURIComponent(address || 'Nairobi Town Centre, Kenya');
   return (
     <div className="overflow-hidden rounded-xl border border-line">
       <iframe

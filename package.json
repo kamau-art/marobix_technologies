@@ -6,24 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:db": "node scripts/seed-db.mjs"
   },
   "dependencies": {
-    "@sanity/client": "^7.26.0",
-    "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "^6.8.0",
     "lucide-react": "^1.28.0",
-    "next": "16.2.12",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "sanity": "^5.31.1",
-    "sharp": "^0.35.0",
-    "styled-components": "^6.4.4"
+    "next": "16.3.0",
+    "pg": "^8.22.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.2.12",
+    "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
     "typescript": "~5.9"
   },

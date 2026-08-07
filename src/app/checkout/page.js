@@ -88,7 +88,7 @@ export default async function CheckoutPage({ searchParams }) {
                 <div className="mt-6 space-y-2 border-t border-line pt-5 text-xs text-muted">
                   <p className="flex items-center gap-2">
                     <Lock aria-hidden="true" className="size-4 shrink-0 text-success" />
-                    Secure payments via Stripe or PayPal
+                    Secure payments via PayPal (international) and M-Pesa (Kenya)
                   </p>
                   <p className="flex items-center gap-2">
                     <ShieldCheck aria-hidden="true" className="size-4 shrink-0 text-success" />

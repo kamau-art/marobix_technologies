@@ -9,11 +9,11 @@ export const siteConfig = {
   locale: 'en_KE',
   currency: 'KES',
   contact: {
-    email: 'hello@marobix.com',
-    phone: '+254700000000',
-    phoneDisplay: '+254 700 000 000',
-    whatsapp: 'https://wa.me/254700000000',
-    address: 'Nairobi, Kenya',
+    email: 'contact@marobix.com',
+    phone: '+254790034811',
+    phoneDisplay: '+254 790 034 811',
+    whatsapp: 'https://wa.me/254790034811',
+    address: 'Nairobi Town Centre, Kenya',
   },
   social: {
     facebook: 'https://facebook.com/marobix',

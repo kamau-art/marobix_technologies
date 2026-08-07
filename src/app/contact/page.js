@@ -100,7 +100,7 @@ export default async function ContactPage({ searchParams }) {
               </div>
 
               <div className="mt-6">
-                <MapEmbed address="Nairobi, Kenya" />
+                <MapEmbed address="Nairobi Town Centre, Kenya" />
               </div>
             </aside>
           </div>
