@@ -10,12 +10,13 @@ services:
     environment:
       - HOSTNAME=0.0.0.0
       - PORT=3000
-      # Inside the compose network the DB host is "db" (not localhost, which .env uses for local dev)
+      # Inside the compose network the DB host is "db" and Postgres listens on its
+      # default port 5432 (the host-side publish below is a separate mapping).
       - DATABASE_URL=postgres://${POSTGRES_USER:-marobix}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-marobix}
     ports:
-      # Production: host nginx owns 80/443 (Let's Encrypt) and proxies to this loopback port.
-      # Bind to loopback so the app is never exposed directly.
-      - "127.0.0.1:3000:3000"
+      # Host nginx owns 80/443 (Let's Encrypt) and proxies to this loopback port.
+      # Keep this in sync with your nginx proxy_pass (see DEPLOY.md 6b/6c).
+      - "127.0.0.1:8080:3000"
     volumes:
       - next-cache:/app/.next/cache
     init: true
@@ -38,9 +39,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB:-marobix}
     ports:
-      # Published as 5433 because another Postgres already uses host port 5432.
-      # Lets the local dev server (npm run dev) reach Postgres at localhost:5433.
-      - "5433:5432"
+      # HOST:CONTAINER. Postgres listens on 5432 inside the container; published on
+      # host port 5403, loopback-only. Optional on the server — the app talks to db
+      # over the internal network, not via this publish.
+      - "127.0.0.1:5403:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     init: true

@@ -148,7 +148,7 @@ docker compose up -d --build
 ```
 
 First build compiles the Next.js app — allow 3–6 minutes. On success you get **two
-services**: `web` (the app, listening on **`127.0.0.1:3000`** — loopback only) and `db`
+services**: `web` (the app, listening on **`127.0.0.1:8080`** — loopback only) and `db`
 (PostgreSQL, data in the `pgdata` volume).
 
 Check everything is up and healthy:
@@ -166,7 +166,7 @@ docker compose logs -f
 Confirm the app answers locally before touching nginx:
 
 ```bash
-curl -I http://127.0.0.1:3000/            # expect HTTP/1.1 200
+curl -I http://127.0.0.1:8080/            # expect HTTP/1.1 200
 ```
 
 ### 6b. Point nginx at the app (your existing Let's Encrypt setup)
@@ -192,7 +192,7 @@ server {
     client_max_body_size 10m;
 
     location / {
-        proxy_pass http://127.0.0.1:3000;
+        proxy_pass http://127.0.0.1:8080;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $scheme;
@@ -219,7 +219,7 @@ sudo systemctl reload nginx
 ## 6c. Upgrading an already-live server (old build → current)
 
 If the site is **already deployed** (e.g. the older Sanity-based build), don't start over —
-your nginx config keeps working unchanged because the app still listens on `127.0.0.1:3000`.
+your nginx config keeps working unchanged because the app still listens on `127.0.0.1:8080`.
 
 1. Push the latest code from your laptop (if you haven't):
 
@@ -249,14 +249,14 @@ docker compose up -d --build
 docker compose ps
 ```
 
-   Then make sure nginx still points at the app's new address (it must be `127.0.0.1:3000`):
+   Then make sure nginx still points at the app's new address (it must be `127.0.0.1:8080`):
 
 ```bash
 grep -rn proxy_pass /etc/nginx/sites-enabled/
 ```
 
    If it targets something else (e.g. a container IP from the old setup), update the
-   `location /` block to `proxy_pass http://127.0.0.1:3000;` and reload:
+   `location /` block to `proxy_pass http://127.0.0.1:8080;` and reload:
 
 ```bash
 sudo nginx -t && sudo systemctl reload nginx
@@ -386,7 +386,7 @@ To wipe data too: `docker compose down -v` (irreversible).
 | `docker compose ps` shows `Restarting` | `docker compose logs web` to see the error |
 | `db` keeps restarting | `docker compose logs db`; check `POSTGRES_PASSWORD` is set in `.env` |
 | Browser shows an untrusted/cert error | DNS not pointing at this server yet — wait for propagation (`dig +short marobix.com`), then `sudo certbot renew` + `sudo systemctl reload nginx` |
-| `curl http://127.0.0.1:3000/` works but the domain 502s | nginx not proxying, or `proxy_pass http://127.0.0.1:3000;` missing/typoed in `/etc/nginx/sites-enabled/marobix` |
+| `curl http://127.0.0.1:8080/` works but the domain 502s | nginx not proxying, or `proxy_pass http://127.0.0.1:8080;` missing/typoed in `/etc/nginx/sites-enabled/marobix` |
 | Site loads but checkout returns 502 | Payment creds not set yet — expected until you complete step 8 |
 | M-Pesa returns "M-Pesa is not configured" | One of `MPESA_CONSUMER_KEY/SECRET/SHORTCODE/PASSKEY/CALLBACK_URL` is empty in `.env` |
 | M-Pesa push never arrives on the phone | Sandbox phone must be `254708374149`; production requires `MPESA_ENV=production` + live shortcode/passkey |
