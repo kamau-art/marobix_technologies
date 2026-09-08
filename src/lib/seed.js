@@ -242,169 +242,58 @@ export const services = [
 
 export const projects = [
   {
-    slug: 'nkuru-retail-pos',
-    title: 'Nkuru Retail POS',
-    client: 'Nkuru Retail',
-    category: 'pos',
-    categoryLabel: 'POS',
-    image: '/images/nkuru.svg',
-    outcome: 'Checkout time reduced by 45%.',
-    overview: {
-      client: 'Nkuru Retail',
-      industry: 'Retail',
-      timeline: '3 months',
-      techStack: ['Node.js', 'React', 'PostgreSQL', 'Daraja API'],
-    },
-    challenge:
-      'A multi-branch retail chain was struggling with slow checkouts, daily cash reconciliation, and no visibility across branches. Sales data lived in spreadsheets and stock was often out of sync.',
-    solution:
-      'We designed and delivered a custom point-of-sale system with product management, M-Pesa and card payment capture, receipt printing, and a central dashboard so management could see sales, stock, and cash across every branch in real time. The system works offline-first, so branches keep selling even when connectivity drops.',
-    screenshots: ['/images/nkuru.svg', '/images/nkuru.svg', '/images/nkuru.svg'],
-    results: [
-      { label: 'Faster checkout', value: '45%' },
-      { label: 'Branches live', value: '6' },
-      { label: 'Daily reconciliation', value: 'Automatic' },
-    ],
-    testimonial:
-      'Marobix delivered our new POS integration ahead of schedule — our checkout process has never been smoother.',
-    testimonialAuthor: 'Operations Director, Nkuru Retail',
-  },
-  {
-    slug: 'greenleaf-organics-ecommerce',
-    title: 'GreenLeaf Organics Ecommerce',
-    client: 'GreenLeaf Organics',
-    category: 'ecommerce',
-    categoryLabel: 'Ecommerce',
-    image: '/images/greenleaf.svg',
-    outcome: 'Online sales up 3x in 6 months.',
-    overview: {
-      client: 'GreenLeaf Organics',
-      industry: 'Ecommerce / Agribusiness',
-      timeline: '2 months',
-      techStack: ['Next.js', 'Stripe', 'Daraja API', 'PostgreSQL'],
-    },
-    challenge:
-      'An organic produce brand was taking orders by phone and WhatsApp, which capped growth and created errors. They needed a proper online store with local payment options.',
-    solution:
-      'We built a full online store with product catalogue, secure M-Pesa and card checkout, order management, and delivery scheduling. The storefront was optimised for mobile, where most Kenyan shoppers buy.',
-    screenshots: ['/images/greenleaf.svg', '/images/greenleaf.svg'],
-    results: [
-      { label: 'Online sales growth', value: '3x' },
-      { label: 'Payment methods', value: 'M-Pesa + Card' },
-      { label: 'Order errors', value: 'Near zero' },
-    ],
-    testimonial:
-      'They understood exactly what we needed and handled everything from hosting to payments. Genuinely reliable team.',
-    testimonialAuthor: 'Founder, GreenLeaf Organics',
-  },
-  {
-    slug: 'meru-traders-business-website',
-    title: 'Meru Traders Business Website',
-    client: 'Meru Traders',
+    slug: 'akmovie-search-app',
+    title: 'AK Movie Search App',
+    client: 'AK Movie',
     category: 'web',
     categoryLabel: 'Web',
-    image: '/images/meru.svg',
-    outcome: 'Lead inquiries up 60%.',
+    image: '/images/akmovie.png',
+    outcome: 'Search any movie, view details, and save favorites in one place.',
     overview: {
-      client: 'Meru Traders',
-      industry: 'Wholesale / Trading',
-      timeline: '5 weeks',
-      techStack: ['Next.js', 'Tailwind', 'Sanity CMS'],
-    },
-    challenge:
-      'Meru Traders had an outdated website that did not reflect their services and had no way to capture leads from their growing online visibility.',
-    solution:
-      'We rebuilt their corporate website with a service catalogue, lead capture forms, and an easy CMS so their team could update content. SEO structure was improved so they ranked for the services they sell.',
-    screenshots: ['/images/meru.svg', '/images/meru.svg'],
-    results: [
-      { label: 'Lead inquiries', value: '+60%' },
-      { label: 'Page speed score', value: '95+' },
-      { label: 'Content editing', value: 'Self-serve CMS' },
-    ],
-    testimonial: null,
-    testimonialAuthor: null,
-  },
-  {
-    slug: 'dataguard-backup-portal',
-    title: 'DataGuard Backup Portal',
-    client: 'DataGuard',
-    category: 'web',
-    categoryLabel: 'Web',
-    image: '/images/dataguard.svg',
-    outcome: 'Backup failure incidents reduced to near zero.',
-    overview: {
-      client: 'DataGuard',
-      industry: 'IT Services',
-      timeline: '2 months',
-      techStack: ['React', 'Node.js', 'AWS S3'],
-    },
-    challenge:
-      'An IT services firm needed a client-facing portal where customers could see their automated backup status, and where the firm could spot failures before customers did.',
-    solution:
-      'We built a dashboard that monitors automated backups, alerts the team the moment a job fails, and gives clients self-serve visibility and restore requests.',
-    screenshots: ['/images/dataguard.svg', '/images/dataguard.svg'],
-    results: [
-      { label: 'Backup failures', value: 'Near zero' },
-      { label: 'Client visibility', value: 'Real-time' },
-      { label: 'Alert response', value: 'Instant' },
-    ],
-    testimonial: null,
-    testimonialAuthor: null,
-  },
-  {
-    slug: 'swiftcart-it-sourcing-platform',
-    title: 'SwiftCart IT Sourcing Platform',
-    client: 'SwiftCart',
-    category: 'it-sourcing',
-    categoryLabel: 'IT Sourcing',
-    image: '/images/swiftcart.svg',
-    outcome: 'Procurement turnaround cut from 2 weeks to 4 days.',
-    overview: {
-      client: 'SwiftCart',
-      industry: 'Enterprise Procurement',
-      timeline: '6 weeks',
-      techStack: ['Django', 'PostgreSQL'],
-    },
-    challenge:
-      'Bulk IT hardware orders were tracked in email and spreadsheets, making a two-week turnaround for a routine order and constant status chasing.',
-    solution:
-      'We delivered an internal procurement tracking tool that automates requisitions, vendor quotes, approvals, and order status — giving the team one place to manage every purchase.',
-    screenshots: ['/images/swiftcart.svg', '/images/swiftcart.svg'],
-    results: [
-      { label: 'Turnaround time', value: '2 wks -> 4 days' },
-      { label: 'Manual follow-ups', value: 'Eliminated' },
-      { label: 'Order visibility', value: 'End-to-end' },
-    ],
-    testimonial: null,
-    testimonialAuthor: null,
-  },
-  {
-    slug: 'amanibot-ai-assistant',
-    title: 'AmaniBot AI Assistant',
-    client: 'Amani Support',
-    category: 'ai',
-    categoryLabel: 'AI',
-    image: '/images/amanibot.svg',
-    outcome: 'First-response time reduced from hours to seconds.',
-    overview: {
-      client: 'Amani Support',
-      industry: 'Customer Support',
+      client: 'AK Movie',
+      industry: 'Entertainment / Media',
       timeline: '4 weeks',
-      techStack: ['Python', 'OpenAI API', 'React widget'],
+      techStack: ['Python', 'Flask', 'Flask-Login', 'TMDb API'],
     },
     challenge:
-      'A support team was drowning in repetitive questions, with first responses taking hours during peak periods and on weekends.',
+      'Movie fans are overwhelmed by the sheer volume of titles available. There was no quick way to search a film, see its details, and save favorites — most people bounced between sites or lost recommendations in chat apps.',
     solution:
-      'We built an AI-powered assistant trained on their knowledge base and FAQs, embedded as a chat widget. It answers routine questions instantly and hands complex cases to human agents with full context.',
-    screenshots: ['/images/amanibot.svg', '/images/amanibot.svg'],
+      'We built AK Movie Search App, a responsive web app powered by the TMDb API. Users can search movies, view rich details, and save favorites to a personal account secured with Flask-Login authentication — one convenient place to discover and track films.',
+    screenshots: ['/images/akmovie.png', '/images/akmovie.png', '/images/akmovie.png'],
     results: [
-      { label: 'First-response time', value: 'Hours -> seconds' },
-      { label: 'Tickets auto-resolved', value: '65%' },
-      { label: 'Agent workload', value: '-40%' },
+      { label: 'Movie catalogue', value: 'Full TMDb API' },
+      { label: 'Favorites saved', value: 'Per account' },
+      { label: 'Experience', value: 'Responsive' },
     ],
-    testimonial:
-      'Working with a Kenya-based team that thinks globally was exactly what our business needed.',
-    testimonialAuthor: 'Support Lead, Amani',
+    testimonial: null,
+    testimonialAuthor: null,
+  },
+  {
+    slug: 'decree-ltd-website',
+    title: 'Decree Ltd — Water, Power & Tank Solutions',
+    client: 'Decree Ltd',
+    category: 'web',
+    categoryLabel: 'Web',
+    image: '/images/decree.png',
+    outcome: 'Marketing site plus admin panel for a five-service engineering company.',
+    overview: {
+      client: 'Decree Ltd',
+      industry: 'Engineering / Infrastructure',
+      timeline: '2 months',
+      techStack: ['Next.js', 'Tailwind CSS', 'PostgreSQL', 'Prisma', 'NextAuth.js'],
+    },
+    challenge:
+      'Decree Ltd offers water drilling, power installation, tank construction, solar pumps, and piping services — but had no online presence to explain those services or capture enquiries, and no way for the team to update their own content.',
+    solution:
+      'We built a modern marketing site covering every service with its own detail page, company story, portfolio gallery, certifications, and partnerships. A protected admin panel (NextAuth credentials + JWT) lets the team manage services, testimonials, portfolio entries, certifications, partners, and contact messages without touching code.',
+    screenshots: ['/images/decree.png', '/images/decree.png', '/images/decree.png'],
+    results: [
+      { label: 'Service pages', value: '5' },
+      { label: 'Admin CMS', value: 'Full CRUD' },
+      { label: 'Contact flow', value: 'Captured' },
+    ],
+    testimonial: null,
+    testimonialAuthor: null,
   },
 ];
 
@@ -432,13 +321,6 @@ export const testimonials = [
   },
 ];
 
-export const team = [
-  { name: 'Founder & CEO', role: 'Leadership', image: '/images/team-1.svg' },
-  { name: 'Head of Engineering', role: 'Engineering', image: '/images/team-2.svg' },
-  { name: 'Design Lead', role: 'Design', image: '/images/team-3.svg' },
-  { name: 'Client Success Manager', role: 'Delivery', image: '/images/team-4.svg' },
-];
-
 export const posts = [
   {
     slug: 'choosing-a-tech-partner-in-kenya',
@@ -446,7 +328,7 @@ export const posts = [
     category: 'Insights',
     excerpt:
       'From websites to POS systems, picking the right technology partner can make or break your project. Here is a practical checklist.',
-    image: '/images/blog-1.svg',
+    image: '/images/blog-tech-partner.jpg',
     date: '2026-06-12',
     author: 'Marobix Team',
     readTime: 6,
@@ -459,7 +341,7 @@ export const posts = [
     category: 'POS',
     excerpt:
       'A modern POS does far more than take payments. Here is how retail and hospitality businesses in Kenya win with the right system.',
-    image: '/images/blog-2.svg',
+    image: '/images/blog-pos.jpg',
     date: '2026-05-28',
     author: 'Marobix Team',
     readTime: 5,
@@ -472,7 +354,7 @@ export const posts = [
     category: 'Ecommerce',
     excerpt:
       'M-Pesa is the payment method Kenyan shoppers prefer. Here is what you need to know to integrate it into your online store safely.',
-    image: '/images/blog-3.svg',
+    image: '/images/blog-mpesa.jpg',
     date: '2026-04-15',
     author: 'Marobix Team',
     readTime: 7,
@@ -584,22 +466,17 @@ export const teamMembers = [
   {
     name: 'Marobix Co-founder',
     role: 'Co-founder & CEO',
-    image: '/images/team-1.svg',
+    image: '/images/team-ceo.jpg',
   },
   {
     name: 'Marobix Co-founder',
     role: 'Co-founder & CTO',
-    image: '/images/team-2.svg',
-  },
-  {
-    name: 'Lead Designer',
-    role: 'Design Lead',
-    image: '/images/team-3.svg',
+    image: '/images/team-cto.jpg',
   },
   {
     name: 'Delivery Lead',
     role: 'Head of Delivery',
-    image: '/images/team-4.svg',
+    image: '/images/team-hod.jpg',
   },
 ];
 

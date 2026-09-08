@@ -10,6 +10,10 @@ export const siteConfig = {
   currency: 'KES',
   contact: {
     email: 'contact@marobix.com',
+    phones: [
+      { phone: '+25475830664', display: '+254 758 306 64' },
+      { phone: '+254740334858', display: '+254 740 334 858' },
+    ],
     phone: '+254790034811',
     phoneDisplay: '+254 790 034 811',
     whatsapp: 'https://wa.me/254790034811',

@@ -104,7 +104,7 @@ export default async function AboutPage() {
             title="People who care about your project"
             description="A compact, senior team — no hand-offs, no vanishing points of contact."
           />
-          <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {team.map((member) => (
               <li key={member.role}>
                 <TeamMemberCard member={member} />

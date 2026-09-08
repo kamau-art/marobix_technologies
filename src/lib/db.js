@@ -283,6 +283,15 @@ export async function getContentBySlug(type, slug) {
   }
 }
 
+export async function deleteContent({ type, slug = null }) {
+  if (!dbEnabled) return;
+  await ensureTables();
+  await getPool().query(
+    `DELETE FROM content WHERE type = $1${slug ? ` AND slug = $2` : ''}`,
+    slug ? [type, slug] : [type]
+  );
+}
+
 export async function upsertContent({ type, slug, sortOrder = 0, body }) {
   if (!dbEnabled) return;
   await ensureTables();

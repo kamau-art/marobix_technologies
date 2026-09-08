@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Zap } from 'lucide-react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 export default function Logo({ className, light }) {
@@ -7,15 +7,20 @@ export default function Logo({ className, light }) {
     <Link
       href="/"
       className={cn(
-        'inline-flex items-center gap-2 text-xl font-bold tracking-tight',
+        'group inline-flex items-center gap-2.5 font-heading text-xl font-bold tracking-tight',
         light ? 'text-white' : 'text-secondary',
         className
       )}
       aria-label="Marobix Technologies — Home"
     >
-      <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-white">
-        <Zap aria-hidden="true" className="size-5 text-accent" />
-      </span>
+      <Image
+        src="/images/logo5-mobius-m.svg"
+        alt=""
+        width={40}
+        height={40}
+        className="size-10 shrink-0"
+        priority
+      />
       <span>
         Marobix<span className="text-accent">.</span>
       </span>

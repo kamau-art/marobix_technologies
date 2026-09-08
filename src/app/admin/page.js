@@ -1,9 +1,10 @@
 import Container from '@/components/ui/Container';
 import Breadcrumb from '@/components/Breadcrumb';
+import Link from 'next/link';
 import { listOrders, listLeads, dbEnabled } from '@/lib/db';
 import { formatKES, formatDate, cn } from '@/lib/utils';
 import { seoDefaults } from '@/lib/site';
-import { Inbox, ShoppingBag } from 'lucide-react';
+import { Inbox, ShoppingBag, FolderKanban } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -55,6 +56,24 @@ export default async function AdminPage() {
           )}
 
           <div className="mt-8 grid gap-8">
+            <section className="rounded-2xl border border-line bg-white p-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <h2 className="flex items-center gap-2 font-heading text-xl font-extrabold text-secondary">
+                  <FolderKanban aria-hidden="true" className="size-5 text-primary" />
+                  Portfolio projects
+                </h2>
+                <Link
+                  href="/admin/projects"
+                  className="inline-flex h-10 min-h-[44px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-brand-pink to-brand-orange px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:brightness-95"
+                >
+                  Manage projects
+                </Link>
+              </div>
+              <p className="mt-2 text-sm text-muted">
+                Add, edit, or remove the case studies shown on the portfolio page.
+              </p>
+            </section>
+
             <section className="rounded-2xl border border-line bg-white p-6">
               <h2 className="flex items-center gap-2 font-heading text-xl font-extrabold text-secondary">
                 <ShoppingBag aria-hidden="true" className="size-5 text-primary" />

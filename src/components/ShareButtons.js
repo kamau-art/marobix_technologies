@@ -1,16 +1,30 @@
 'use client';
 
 import { Link2, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import {
   FacebookIcon,
   TwitterIcon,
   LinkedinIcon,
 } from './icons/BrandIcons';
 
+function subscribe() {
+  return () => {};
+}
+
+function getOrigin() {
+  return window.location.origin;
+}
+
+function getServerOrigin() {
+  return '';
+}
+
 export default function ShareButtons({ title, path }) {
   const [copied, setCopied] = useState(false);
-  const url = `${typeof window !== 'undefined' ? window.location.origin : ''}${path}`;
+  const origin = useSyncExternalStore(subscribe, getOrigin, getServerOrigin);
+
+  const url = `${origin}${path}`;
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
 

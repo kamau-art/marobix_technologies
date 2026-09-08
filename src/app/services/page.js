@@ -54,7 +54,7 @@ export default async function ServicesPage() {
             <div className="mt-6 flex justify-center">
               <a
                 href="/contact"
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-accent px-6 text-sm font-semibold text-white hover:bg-accent-dark"
+                className="inline-flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-brand-pink to-brand-orange px-6 text-sm font-semibold text-white hover:brightness-95"
               >
                 Get a free consult
               </a>

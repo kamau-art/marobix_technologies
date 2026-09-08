@@ -30,7 +30,15 @@ export default async function ContactPage({ searchParams }) {
     },
     {
       icon: Phone,
-      label: 'Call or WhatsApp',
+      label: 'Call us',
+      items: siteConfig.contact.phones.map(({ phone, display }) => ({
+        value: display,
+        href: `tel:${phone}`,
+      })),
+    },
+    {
+      icon: MessageCircle,
+      label: 'WhatsApp us',
       value: siteConfig.contact.phoneDisplay,
       href: siteConfig.contact.whatsapp,
     },
@@ -66,14 +74,26 @@ export default async function ContactPage({ searchParams }) {
               <div className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
                 <h2 className="text-2xl font-bold text-secondary">Get in touch</h2>
                 <ul className="mt-6 space-y-5">
-                  {details.map(({ icon: Icon, label, value, href }) => (
+                  {details.map(({ icon: Icon, label, value, href, items }) => (
                     <li key={label} className="flex items-start gap-4">
                       <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg bg-primary-light text-primary">
                         <Icon aria-hidden="true" className="size-5" />
                       </span>
                       <div>
                         <p className="text-sm font-semibold text-secondary">{label}</p>
-                        {href ? (
+                        {items ? (
+                          <div className="mt-0.5 space-y-1">
+                            {items.map(({ value: itemValue, href: itemHref }) => (
+                              <a
+                                key={itemValue}
+                                href={itemHref}
+                                className="block text-muted underline-offset-2 hover:text-primary hover:underline"
+                              >
+                                {itemValue}
+                              </a>
+                            ))}
+                          </div>
+                        ) : href ? (
                           <a
                             href={href}
                             target={href.startsWith('http') ? '_blank' : undefined}

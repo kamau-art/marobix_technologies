@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 const variants = {
   primary:
-    'bg-accent text-white hover:bg-accent-dark shadow-sm hover:shadow-md border border-transparent',
+    'bg-gradient-to-r from-brand-pink to-brand-orange text-white shadow-sm hover:shadow-md border border-transparent hover:brightness-95',
   secondary:
     'bg-transparent text-primary border-2 border-primary hover:bg-primary hover:text-white',
   ghost: 'bg-transparent text-primary hover:bg-primary-light border border-transparent',
