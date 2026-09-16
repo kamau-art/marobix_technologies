@@ -11,7 +11,7 @@ export const siteConfig = {
   contact: {
     email: 'contact@marobix.com',
     phones: [
-      { phone: '+25475830664', display: '+254 758 306 64' },
+      { phone: '+254758302664', display: '+254 758 302 664' },
       { phone: '+254740334858', display: '+254 740 334 858' },
     ],
     phone: '+254790034811',

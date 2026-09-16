@@ -127,6 +127,7 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setOpen(false)}
               className={cn(
                 'rounded-lg px-3 py-3 text-base font-medium',
                 pathname === item.href
@@ -137,7 +138,7 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          <Button href="/contact" className="mt-3 w-full">
+          <Button href="/contact" className="mt-3 w-full" onClick={() => setOpen(false)}>
             Get a Free Quote
           </Button>
         </nav>
