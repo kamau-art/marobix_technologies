@@ -16,6 +16,7 @@ export async function generateMetadata({ searchParams }) {
   return {
     title: plan ? `Checkout — ${plan.name} Plan | Marobix Technologies` : seoDefaults.checkout.title,
     description: seoDefaults.checkout.description,
+    robots: { index: false, follow: false },
   };
 }
 

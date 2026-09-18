@@ -11,6 +11,13 @@ import CTABanner from '@/components/CTABanner';
 import Button from '@/components/ui/Button';
 import Icon from '@/components/ui/Icon';
 import { getServiceBySlug, getServices, getProjects } from '@/lib/data';
+import { siteConfig } from '@/lib/site';
+import {
+  breadcrumbSchema,
+  faqSchema,
+  serviceSchema,
+} from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
@@ -23,9 +30,20 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) return {};
+  const title = `${service.title} Services in Kenya | Marobix`;
   return {
-    title: `${service.title} Services in Kenya | Marobix Technologies`,
+    title,
     description: service.blurb,
+    alternates: { canonical: `/services/${service.slug}` },
+    openGraph: {
+      title,
+      description: service.blurb,
+      url: `/services/${service.slug}`,
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
+    twitter: { card: 'summary_large_image', title, description: service.blurb },
   };
 }
 
@@ -45,6 +63,15 @@ export default async function ServiceDetailPage({ params }) {
 
   return (
     <>
+      <JsonLd data={serviceSchema(service)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { label: 'Home', href: '/' },
+          { label: 'Services', href: '/services' },
+          { label: service.title },
+        ])}
+      />
+      {service.faqs?.length > 0 && <JsonLd data={faqSchema(service.faqs)} />}
       <section className="border-b border-line bg-white">
         <Container>
           <Breadcrumb

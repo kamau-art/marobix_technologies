@@ -102,6 +102,7 @@ export async function saveProject(prevState, formData) {
 
   revalidatePath('/portfolio');
   revalidatePath('/portfolio/[slug]', 'page');
+  revalidatePath('/sitemap.xml');
   redirect('/admin/projects');
 }
 
@@ -115,6 +116,7 @@ export async function deleteProject(formData) {
     await deleteContent({ type: 'project', slug });
     revalidatePath('/portfolio');
     revalidatePath('/portfolio/[slug]', 'page');
+    revalidatePath('/sitemap.xml');
   }
   redirect('/admin/projects');
 }

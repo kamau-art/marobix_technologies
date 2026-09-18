@@ -1,12 +1,14 @@
 import { siteConfig } from '@/lib/site';
 
 export default function robots() {
+  const baseUrl = siteConfig.baseUrl.replace(/\/$/, '');
   return {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/studio/'],
+      disallow: ['/api/', '/admin/', '/checkout/', '/checkout/confirmation/'],
     },
-    sitemap: `${siteConfig.baseUrl.replace(/\/$/, '')}/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }

@@ -6,6 +6,8 @@ import TeamMemberCard from '@/components/TeamMemberCard';
 import StatCounter from '@/components/StatCounter';
 import { getTeam } from '@/lib/data';
 import { siteConfig, seoDefaults } from '@/lib/site';
+import { aboutPageSchema, organizationSchema } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
@@ -13,6 +15,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.about.title,
     description: seoDefaults.about.description,
+    alternates: { canonical: '/about' },
+    openGraph: {
+      title: seoDefaults.about.title,
+      description: seoDefaults.about.description,
+      url: '/about',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 
@@ -32,6 +43,8 @@ export default async function AboutPage() {
 
   return (
     <>
+      <JsonLd data={organizationSchema()} />
+      <JsonLd data={aboutPageSchema()} />
       <Hero
         compact
         eyebrow="About us"

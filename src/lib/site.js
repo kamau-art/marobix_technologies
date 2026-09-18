@@ -8,15 +8,31 @@ export const siteConfig = {
   baseUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://marobix.com',
   locale: 'en_KE',
   currency: 'KES',
+  foundingDate: '2020',
+  logo: '/images/logo5-mobius-m.svg',
+  areaServed: ['KE', 'East Africa', 'Africa', 'Global'],
+  address: {
+    streetAddress: 'Nairobi Town Centre',
+    addressLocality: 'Nairobi',
+    addressRegion: 'Nairobi County',
+    postalCode: '00100',
+    addressCountry: 'KE',
+  },
+  geo: { latitude: -1.2833, longitude: 36.8167 },
+  openingHours: [
+    { days: 'Monday-Friday', opens: '08:00', closes: '17:00' },
+    { days: 'Saturday', opens: '09:00', closes: '13:00' },
+  ],
+  priceRange: 'KES 35,000 - KES 500,000+',
   contact: {
     email: 'contact@marobix.com',
     phones: [
-      { phone: '+254758302664', display: '+254 758 302 664' },
-      { phone: '+254740334858', display: '+254 740 334 858' },
+      { phone: '+254758302664', display: '+254 758 302 664', whatsapp: 'https://wa.me/254758302664' },
+      { phone: '+254740334858', display: '+254 740 334 858', whatsapp: 'https://wa.me/254740334858' },
     ],
-    phone: '+254790034811',
-    phoneDisplay: '+254 790 034 811',
-    whatsapp: 'https://wa.me/254790034811',
+    phone: '+254758302664',
+    phoneDisplay: '+254 758 302 664',
+    whatsapp: 'https://wa.me/254758302664',
     address: 'Nairobi Town Centre, Kenya',
   },
   social: {
@@ -84,56 +100,56 @@ export const contactBudgets = [
 
 export const seoDefaults = {
   home: {
-    title: 'Marobix Technologies — Web Development, IT Solutions & POS Systems in Kenya',
+    title: 'Web Development, IT Solutions & POS Systems in Kenya | Marobix',
     description:
-      'Custom websites, ecommerce stores, POS systems, IT sourcing, AI integrations, cloud hosting and IT support in Kenya. One team, every tech need.',
+      'Marobix Technologies — Kenya web development, ecommerce, POS systems, M-Pesa integrations, IT sourcing & IT support. One team, every tech need.',
   },
   about: {
-    title: 'About Us | Marobix Technologies',
+    title: 'About Marobix | Web & IT Company in Nairobi, Kenya',
     description:
-      'Marobix Technologies is a Kenya-based IT and web development company serving clients across the globe with local insight and global standards.',
+      'Marobix Technologies is a Nairobi-based web development and IT company serving businesses across Kenya, Africa, and the world with global technical standards.',
   },
   services: {
-    title: 'IT & Web Development Services | Marobix Technologies',
+    title: 'IT & Web Development Services in Kenya | Marobix',
     description:
-      'Explore our services: website development, ecommerce, POS systems, IT sourcing, data backup, AI integrations, cloud & hosting, and IT support.',
+      'Website development, ecommerce, POS systems, IT sourcing, cloud hosting, M-Pesa integrations and IT support in Kenya — delivered end-to-end by one team.',
   },
   portfolio: {
-    title: 'Our Work | Portfolio | Marobix Technologies',
+    title: 'Portfolio & Case Studies | Web, Ecommerce & POS in Kenya | Marobix',
     description:
-      'See how Marobix has helped businesses across Kenya and beyond with web, ecommerce, POS, AI, and IT sourcing projects.',
+      'Real Marobix projects: websites, online stores, POS systems and AI tools built for businesses across Kenya and beyond.',
   },
   pricing: {
-    title: 'Pricing & Plans | Marobix Technologies',
+    title: 'Website Packages & Pricing in Kenya | Marobix',
     description:
-      'Transparent pricing for productized web packages. Custom IT sourcing, POS, and AI work is quote-based.',
+      'Transparent one-time website pricing in Kenya — Starter KES 35,000, Business KES 65,000. Custom quotes for ecommerce, POS systems and AI integrations.',
   },
   checkout: {
     title: 'Checkout | Marobix Technologies',
-    description: 'Secure checkout with M-Pesa, card, or PayPal.',
+    description: 'Secure checkout with M-Pesa (Kenya) or PayPal (international).',
   },
   confirmation: {
     title: 'Order Confirmed | Marobix Technologies',
     description: 'Your order has been confirmed.',
   },
   contact: {
-    title: 'Contact Us | Get a Free Quote | Marobix Technologies',
+    title: 'Contact Marobix | Free Web Development Quote in Kenya',
     description:
-      'Tell us about your project and get a free quote from Marobix Technologies within 24 hours.',
+      'Tell us about your project and get a free quote from Marobix Technologies, Nairobi, within 24 hours. Call, WhatsApp, or email us.',
   },
   blog: {
-    title: 'Insights & Blog | Marobix Technologies',
+    title: 'Blog: Web, Ecommerce & POS Insights | Marobix Kenya',
     description:
-      'Articles, guides, and insights on web development, IT solutions, POS systems, and business technology.',
+      'Practical articles and guides on web development, ecommerce, POS systems, M-Pesa and business technology in Kenya.',
   },
   careers: {
-    title: 'Careers | Marobix Technologies',
+    title: 'Careers at Marobix | Developer, Design & Client Roles in Kenya',
     description:
-      'Join the Marobix team — we are always looking for great people to build technology for Kenya and the world.',
+      'Join the Marobix team in Nairobi — full-stack developers, UI/UX designers and client champions building technology for Kenya and the world.',
   },
   privacy: {
     title: 'Privacy Policy | Marobix Technologies',
-    description: 'How Marobix Technologies collects, uses, and protects your data.',
+    description: 'How Marobix Technologies collects, uses, and protects your data in line with the Kenya Data Protection Act 2019.',
   },
   terms: {
     title: 'Terms of Service | Marobix Technologies',

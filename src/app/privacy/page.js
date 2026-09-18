@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import LegalContent from '@/components/LegalContent';
 import { getLegalPage } from '@/lib/data';
-import { seoDefaults } from '@/lib/site';
+import { siteConfig, seoDefaults } from '@/lib/site';
 
 export const revalidate = 60;
 
@@ -9,6 +9,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.privacy.title,
     description: seoDefaults.privacy.description,
+    alternates: { canonical: '/privacy' },
+    openGraph: {
+      title: seoDefaults.privacy.title,
+      description: seoDefaults.privacy.description,
+      url: '/privacy',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 

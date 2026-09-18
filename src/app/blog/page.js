@@ -6,7 +6,7 @@ import Pagination from '@/components/Pagination';
 import NewsletterForm from '@/components/NewsletterForm';
 import CTABanner from '@/components/CTABanner';
 import { getPosts } from '@/lib/data';
-import { seoDefaults } from '@/lib/site';
+import { siteConfig, seoDefaults } from '@/lib/site';
 import { formatDate } from '@/lib/utils';
 
 export const revalidate = 60;
@@ -17,6 +17,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.blog.title,
     description: seoDefaults.blog.description,
+    alternates: { canonical: '/blog' },
+    openGraph: {
+      title: seoDefaults.blog.title,
+      description: seoDefaults.blog.description,
+      url: '/blog',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 

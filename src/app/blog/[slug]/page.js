@@ -6,6 +6,9 @@ import ShareButtons from '@/components/ShareButtons';
 import NewsletterForm from '@/components/NewsletterForm';
 import CTABanner from '@/components/CTABanner';
 import { getPostBySlug, getPosts } from '@/lib/data';
+import { siteConfig } from '@/lib/site';
+import { blogPostingSchema, breadcrumbSchema, absUrl } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 import { formatDate } from '@/lib/utils';
 
 export const revalidate = 60;
@@ -19,9 +22,29 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+  const title = `${post.title} | Marobix Blog`;
+  const image = post.image ? absUrl(post.image) : undefined;
   return {
-    title: `${post.title} | Marobix Blog`,
+    title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title,
+      description: post.excerpt,
+      url: `/blog/${post.slug}`,
+      type: 'article',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+      publishedTime: new Date(post.date).toISOString(),
+      authors: [post.author],
+      ...(image ? { images: [{ url: image, alt: post.title }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: post.excerpt,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
@@ -35,6 +58,14 @@ export default async function BlogPostPage({ params }) {
 
   return (
     <>
+      <JsonLd data={blogPostingSchema(post)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { label: 'Home', href: '/' },
+          { label: 'Blog', href: '/blog' },
+          { label: post.title },
+        ])}
+      />
       <section className="bg-white">
         <Container>
           <Breadcrumb
@@ -66,7 +97,7 @@ export default async function BlogPostPage({ params }) {
               {post.image ? (
                 <Image
                   src={post.image}
-                  alt=""
+                  alt={post.title}
                   fill
                   priority
                   sizes="(max-width: 1280px) 100vw, 1280px"
@@ -112,7 +143,7 @@ export default async function BlogPostPage({ params }) {
                       {p.image ? (
                         <Image
                           src={p.image}
-                          alt=""
+                          alt={p.title}
                           fill
                           sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover transition-transform duration-300 group-hover:scale-105"

@@ -19,6 +19,7 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.confirmation.title,
     description: seoDefaults.confirmation.description,
+    robots: { index: false, follow: false },
   };
 }
 

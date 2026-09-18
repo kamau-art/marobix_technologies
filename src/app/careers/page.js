@@ -4,7 +4,7 @@ import SectionHeading from '@/components/SectionHeading';
 import CTABanner from '@/components/CTABanner';
 import Button from '@/components/ui/Button';
 import { getCareers } from '@/lib/data';
-import { seoDefaults } from '@/lib/site';
+import { siteConfig, seoDefaults } from '@/lib/site';
 import { ArrowRight, HeartHandshake, Rocket, Users } from 'lucide-react';
 
 export const revalidate = 60;
@@ -13,6 +13,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.careers.title,
     description: seoDefaults.careers.description,
+    alternates: { canonical: '/careers' },
+    openGraph: {
+      title: seoDefaults.careers.title,
+      description: seoDefaults.careers.description,
+      url: '/careers',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 

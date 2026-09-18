@@ -8,6 +8,9 @@ import PortfolioCard from '@/components/PortfolioCard';
 import CTABanner from '@/components/CTABanner';
 import Button from '@/components/ui/Button';
 import { getProjectBySlug, getProjects } from '@/lib/data';
+import { siteConfig } from '@/lib/site';
+import { creativeWorkSchema, breadcrumbSchema, absUrl } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
@@ -20,9 +23,27 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) return {};
+  const title = `${project.title} Case Study | Marobix Technologies`;
+  const image = project.image ? absUrl(project.image) : undefined;
   return {
-    title: `${project.title} Case Study | Marobix Technologies`,
+    title,
     description: project.outcome,
+    alternates: { canonical: `/portfolio/${project.slug}` },
+    openGraph: {
+      title,
+      description: project.outcome,
+      url: `/portfolio/${project.slug}`,
+      type: 'article',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+      ...(image ? { images: [{ url: image, alt: project.title }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: project.outcome,
+      ...(image ? { images: [image] } : {}),
+    },
   };
 }
 
@@ -43,6 +64,14 @@ export default async function CaseStudyPage({ params }) {
 
   return (
     <>
+      <JsonLd data={creativeWorkSchema(project)} />
+      <JsonLd
+        data={breadcrumbSchema([
+          { label: 'Home', href: '/' },
+          { label: 'Portfolio', href: '/portfolio' },
+          { label: project.title },
+        ])}
+      />
       <section className="bg-white">
         <Container>
           <Breadcrumb

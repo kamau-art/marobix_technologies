@@ -10,16 +10,28 @@ import Icon from '@/components/ui/Icon';
 import Button from '@/components/ui/Button';
 import { getServices, getProjects, getTestimonials } from '@/lib/data';
 import { siteConfig } from '@/lib/site';
+import { localBusinessSchema, serviceListSchema } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
 export async function generateMetadata() {
   return {
-    title: 'Marobix Technologies — Web Development, IT Solutions & POS Systems in Kenya',
+    title: 'Web Development, IT Solutions & POS Systems in Kenya | Marobix',
     description:
       'Custom websites, ecommerce stores, POS systems, IT sourcing, AI integrations, cloud hosting and IT support in Kenya. One team, every tech need.',
+    alternates: { canonical: '/' },
     openGraph: {
-      title: 'Marobix Technologies — Web Development, IT Solutions & POS Systems in Kenya',
+      title: 'Web Development, IT Solutions & POS Systems in Kenya | Marobix',
+      description: siteConfig.description,
+      url: '/',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Web Development, IT Solutions & POS Systems in Kenya | Marobix',
       description: siteConfig.description,
     },
   };
@@ -36,9 +48,11 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={localBusinessSchema()} />
+      <JsonLd data={serviceListSchema(services)} />
       <Hero
         eyebrow="Web · IT Solutions · POS Systems"
-        title="IT solutions built in Kenya, engineered for the world."
+        title="Web development & IT solutions built in Kenya, engineered for the world."
         subtitle={siteConfig.description}
         primaryCta={{ label: 'Get a Free Quote', href: '/contact' }}
         secondaryCta={{ label: 'See Our Work', href: '/portfolio' }}

@@ -4,7 +4,9 @@ import ServiceCard from '@/components/ServiceCard';
 import CTABanner from '@/components/CTABanner';
 import SectionHeading from '@/components/SectionHeading';
 import { getServices } from '@/lib/data';
-import { seoDefaults } from '@/lib/site';
+import { siteConfig, seoDefaults } from '@/lib/site';
+import { serviceListSchema } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
@@ -12,6 +14,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.services.title,
     description: seoDefaults.services.description,
+    alternates: { canonical: '/services' },
+    openGraph: {
+      title: seoDefaults.services.title,
+      description: seoDefaults.services.description,
+      url: '/services',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 
@@ -20,6 +31,7 @@ export default async function ServicesPage() {
 
   return (
     <>
+      <JsonLd data={serviceListSchema(services)} />
       <Hero
         compact
         eyebrow="Services"

@@ -118,6 +118,7 @@ Set these **before the first build** (`NEXT_PUBLIC_*` is baked into the image):
 | Variable | What to put |
 |---|---|
 | `NEXT_PUBLIC_SITE_URL` | `https://marobix.com` — must be set before building (payment return/callback URLs are built from it) |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Optional. Search Console HTML-tag token — must be set before building to bake into static pages. Or use DNS TXT verification and leave blank (see step 11). |
 | `POSTGRES_USER` | `marobix` |
 | `POSTGRES_PASSWORD` | **A strong password** (letters + numbers only — avoids URL-escaping issues) |
 | `POSTGRES_DB` | `marobix` |
@@ -178,13 +179,25 @@ proxies to the app. Create `/etc/nginx/sites-available/marobix`:
 server {
     listen 80;
     server_name marobix.com www.marobix.com;
-    return 301 https://$host$request_uri;
+    return 301 https://marobix.com$request_uri;
 }
 
 server {
     listen 443 ssl;
     http2 on;
-    server_name marobix.com www.marobix.com;
+    server_name www.marobix.com;
+
+    ssl_certificate     /etc/letsencrypt/live/marobix.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/marobix.com/privkey.pem;
+
+    # One canonical host: send www to the apex domain (matches the site canonical).
+    return 301 https://marobix.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name marobix.com;
 
     ssl_certificate     /etc/letsencrypt/live/marobix.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/marobix.com/privkey.pem;
@@ -284,6 +297,20 @@ curl -I https://marobix.com/admin            # expect 401 (auth required)
 
 Open `https://marobix.com` in a browser — you should see the site with a valid padlock.
 Open `/admin` and log in with the `ADMIN_*` creds — it lists recent leads and orders.
+
+### 7b. Verify SEO output (do this the same day)
+
+```bash
+curl -s https://marobix.com/robots.txt                     # sitemap + Disallow /api/ /admin/ /checkout/
+curl -s https://marobix.com/sitemap.xml | head             # real https://marobix.com URLs, not localhost
+curl -sI https://www.marobix.com/ | grep -i location       # expect 301 -> https://marobix.com/
+curl -s https://marobix.com/ | grep -o '<link rel="canonical"[^>]*>'   # expect https://marobix.com
+curl -s https://marobix.com/services/website-development | grep -c 'application/ld+json'  # expect >0
+```
+
+Then paste these live URLs into [Rich Results Test](https://search.google.com/test/rich-results):
+`/`, `/services/website-development`, `/blog/mpesa-checkout-guide`, `/pricing`.
+Fix any errors before requesting indexing. See step 11 for Search Console + Google Business Profile.
 
 The `content` table auto-seeds from `src/lib/seed.js` on the first page request, so the
 site works even before any manual seeding.
@@ -394,7 +421,29 @@ To wipe data too: `docker compose down -v` (irreversible).
 | Site up but pages show no content | `content` table empty and `DATABASE_URL` unreachable — `docker compose ps` + `docker compose logs db` |
 | `/admin` returns 404 | `ADMIN_USERNAME`/`ADMIN_PASSWORD` not set in `.env` |
 | Forms work but no leads saved | DB down — `docker compose ps` + `docker compose logs db` |
+| Web logs `EACCES ... mkdir '/app/.next/cache/images'`, container unhealthy | Stale `next-cache` volume was created `root:root`. `docker compose down`, then `docker volume rm <project>_next-cache`, then `docker compose up -d --build` (Dockerfile now pre-creates the dir owned by `nextjs`). **Never `down -v`** — that deletes `pgdata`. |
 | Port 80/443 already in use | nginx is expected to own them. `sudo lsof -i :80` to check nothing else is |
+
+---
+
+## 11. SEO go-live (Search Console + Google Business Profile)
+
+The code-side SEO is already shipped; these off-site steps are what make it effective.
+Full detail lives in `SEO.md`.
+
+1. **Search Console** — <https://search.google.com/search-console> → add `https://marobix.com`.
+   Verify with a **DNS TXT record** (works without a rebuild) or set
+   `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` in `.env` and rebuild.
+2. Submit `https://marobix.com/sitemap.xml`, then use **URL Inspection → Request indexing**
+   for `/` and each `/services/<slug>` page.
+3. **Google Business Profile** — claim it at <https://business.google.com> with the same
+   name/phone/address as `src/lib/site.js`, add services, photos, and request reviews.
+   This drives the map pack for "IT company Nairobi" / "web developer near me".
+4. **Analytics** — wire GA4 (or Plausible) behind the existing cookie consent.
+5. **Backlinks** — ask delivered clients (Decree, AK Movie, …) to link "Website by Marobix".
+
+> Note: the `sitemap.xml` route revalidates hourly and the admin project actions
+> revalidate it immediately, so newly added projects appear without a redeploy.
 
 ---
 

@@ -6,7 +6,9 @@ import ComparisonTable from '@/components/ComparisonTable';
 import FAQAccordion from '@/components/FAQAccordion';
 import CTABanner from '@/components/CTABanner';
 import { getPricing } from '@/lib/data';
-import { seoDefaults } from '@/lib/site';
+import { siteConfig, seoDefaults } from '@/lib/site';
+import { pricingOffersSchema, faqSchema } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 import { Info } from 'lucide-react';
 
 export const revalidate = 60;
@@ -15,6 +17,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.pricing.title,
     description: seoDefaults.pricing.description,
+    alternates: { canonical: '/pricing' },
+    openGraph: {
+      title: seoDefaults.pricing.title,
+      description: seoDefaults.pricing.description,
+      url: '/pricing',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 
@@ -23,10 +34,12 @@ export default async function PricingPage() {
 
   return (
     <>
+      <JsonLd data={pricingOffersSchema(plans)} />
+      {faqs?.length > 0 && <JsonLd data={faqSchema(faqs)} />}
       <Hero
         compact
         eyebrow="Pricing"
-        title="Simple, honest pricing"
+        title="Simple, honest website pricing in Kenya"
         subtitle="Productized web packages with a fixed, one-time price. Custom IT sourcing, POS, and AI work is quote-based — tell us what you need."
         primaryCta={{ label: 'Get a Free Quote', href: '/contact' }}
         secondaryCta={{ label: 'See Our Work', href: '/portfolio' }}

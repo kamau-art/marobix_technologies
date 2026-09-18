@@ -7,6 +7,8 @@ import CTABanner from '@/components/CTABanner';
 import { Mail, Phone, MessageCircle, MapPin, Clock } from 'lucide-react';
 import { getServices } from '@/lib/data';
 import { siteConfig, seoDefaults } from '@/lib/site';
+import { contactPageSchema, localBusinessSchema } from '@/lib/seo';
+import JsonLd from '@/components/JsonLd';
 
 export const revalidate = 60;
 
@@ -14,6 +16,15 @@ export async function generateMetadata() {
   return {
     title: seoDefaults.contact.title,
     description: seoDefaults.contact.description,
+    alternates: { canonical: '/contact' },
+    openGraph: {
+      title: seoDefaults.contact.title,
+      description: seoDefaults.contact.description,
+      url: '/contact',
+      type: 'website',
+      siteName: siteConfig.name,
+      locale: 'en_KE',
+    },
   };
 }
 
@@ -39,8 +50,10 @@ export default async function ContactPage({ searchParams }) {
     {
       icon: MessageCircle,
       label: 'WhatsApp us',
-      value: siteConfig.contact.phoneDisplay,
-      href: siteConfig.contact.whatsapp,
+      items: siteConfig.contact.phones.map(({ display, whatsapp }) => ({
+        value: display,
+        href: whatsapp,
+      })),
     },
     {
       icon: MapPin,
@@ -56,6 +69,8 @@ export default async function ContactPage({ searchParams }) {
 
   return (
     <>
+      <JsonLd data={localBusinessSchema()} />
+      <JsonLd data={contactPageSchema()} />
       <Hero
         compact
         eyebrow="Contact"
