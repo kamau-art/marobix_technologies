@@ -1,4 +1,8 @@
-import { headers } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import {
+  SESSION_COOKIE_NAME,
+  verifySessionToken,
+} from './admin-session';
 
 const USERNAME = process.env.ADMIN_USERNAME || '';
 const PASSWORD = process.env.ADMIN_PASSWORD || '';
@@ -17,5 +21,8 @@ export async function isAdmin() {
   const list = await headers();
   const authorization = list.get('authorization') || '';
   const expected = `Basic ${Buffer.from(`${USERNAME}:${PASSWORD}`).toString('base64')}`;
-  return matches(expected, authorization);
+  if (matches(expected, authorization)) return true;
+
+  const jar = await cookies();
+  return verifySessionToken(jar.get(SESSION_COOKIE_NAME)?.value);
 }

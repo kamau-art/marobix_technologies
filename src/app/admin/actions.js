@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { cookies } from 'next/headers';
 import {
   upsertContent,
   deleteContent,
@@ -10,6 +11,11 @@ import {
 } from '@/lib/db';
 import { isAdmin } from '@/lib/admin-auth';
 import { CATEGORY_LABELS } from '@/lib/project-categories';
+import {
+  createSessionToken,
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE,
+} from '@/lib/admin-session';
 
 function slugify(str) {
   return String(str || '')
@@ -119,4 +125,35 @@ export async function deleteProject(formData) {
     revalidatePath('/sitemap.xml');
   }
   redirect('/admin/projects');
+}
+
+export async function adminLogin(prevState, formData) {
+  const username = String(formData.get('username') || '').trim();
+  const password = String(formData.get('password') || '');
+
+  if (
+    username !== process.env.ADMIN_USERNAME ||
+    password !== process.env.ADMIN_PASSWORD ||
+    !process.env.ADMIN_USERNAME ||
+    !process.env.ADMIN_PASSWORD
+  ) {
+    return { error: 'Invalid username or password.' };
+  }
+
+  const jar = await cookies();
+  jar.set(SESSION_COOKIE_NAME, createSessionToken(), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/admin',
+    maxAge: SESSION_MAX_AGE,
+  });
+
+  redirect('/admin');
+}
+
+export async function adminLogout() {
+  const jar = await cookies();
+  jar.delete(SESSION_COOKIE_NAME, { path: '/admin' });
+  redirect('/admin/login');
 }

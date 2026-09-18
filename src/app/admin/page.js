@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { listOrders, listLeads, dbEnabled } from '@/lib/db';
 import { formatKES, formatDate, cn } from '@/lib/utils';
 import { seoDefaults } from '@/lib/site';
-import { Inbox, ShoppingBag, FolderKanban } from 'lucide-react';
+import { adminLogout } from './actions';
+import { Inbox, ShoppingBag, FolderKanban, LogOut } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -46,7 +47,18 @@ export default async function AdminPage() {
       <section className="bg-surface pb-20">
         <Container className="max-w-5xl">
           <h1 className="mt-10 text-3xl font-extrabold text-secondary">Dashboard</h1>
-          <p className="mt-2 text-sm text-muted">{seoDefaults.title} — leads and orders</p>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted">{seoDefaults.title} — leads and orders</p>
+            <form action={adminLogout}>
+              <button
+                type="submit"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-line px-3 text-xs font-semibold text-muted transition-colors hover:border-error/40 hover:bg-error/5 hover:text-error"
+              >
+                <LogOut aria-hidden="true" className="size-3.5" />
+                Sign out
+              </button>
+            </form>
+          </div>
 
           {!dbEnabled && (
             <div className="mt-6 rounded-lg border border-accent/40 bg-accent-light p-4 text-sm text-secondary">

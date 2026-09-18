@@ -278,7 +278,7 @@ sudo nginx -t && sudo systemctl reload nginx
 4. Confirm the old build is really gone:
 
 ```bash
-curl -I https://marobix.com/admin       # expect 401 (was 404 on the old build)
+curl -I https://marobix.com/admin       # expect 307 (redirects to the styled /admin/login page)
 curl -I https://marobix.com/studio      # expect 404 (was 500/broken)
 ```
 
@@ -292,7 +292,7 @@ From your laptop:
 curl -I https://marobix.com/                 # expect HTTP/1.1 200
 curl -I https://marobix.com/pricing          # expect 200
 curl -I https://www.marobix.com/             # expect 200
-curl -I https://marobix.com/admin            # expect 401 (auth required)
+curl -I https://marobix.com/admin            # expect 307 (redirect to /admin/login)
 ```
 
 Open `https://marobix.com` in a browser — you should see the site with a valid padlock.
