@@ -46,9 +46,13 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Phone aria-hidden="true" className="size-4 text-primary" />
-              <a href={`tel:${contact.phone}`} className="hover:text-primary">
-                {contact.phoneDisplay}
-              </a>
+              <span>
+                {contact.phones.map(({ phone, display }) => (
+                  <a key={phone} href={`tel:${phone}`} className="block hover:text-primary">
+                    {display}
+                  </a>
+                ))}
+              </span>
             </li>
             <li className="flex items-center gap-2">
               <MapPin aria-hidden="true" className="size-4 text-primary" />
